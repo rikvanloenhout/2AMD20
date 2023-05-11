@@ -1,0 +1,19 @@
+Preprocessing ideas:
+World crime index: split country and city.
+All datasets: check types of columns
+
+Combine all datasets on the country column
+Retain columns
+
+Look at the questions of chapter 4, explore if they are applicable to the combined dataset
+
+Identify factors by: 
+Correlation matrices
+
+Split the work:
+2 groups, 2 chapters each.
+For next week, finish 1/2 chapters. For group with ch 3+4, make sure 4 is finished next week.
+
+Rik & Pim, chapters 3&4, have ch4 done next week.
+Alexander & Omar, chapters 1&2, have one of them done next week.
+
