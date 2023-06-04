@@ -15,18 +15,33 @@ class CloroMap(html.Div):
             ],
         )
 
-    def update(self, df, colorby, on_hover=None):
-        if on_hover is None:
+    def update(self, df, colorby, on_hover=None, animation_frame=None):
+        if on_hover is None and animation_frame is None:
             self.fig = px.choropleth(df,
                                      locations="ISO",
                                      color=colorby,
                                      hover_name="Country",
                                      color_continuous_scale=px.colors.sequential.Plasma)
+        elif on_hover is None and animation_frame is not None:
+            self.fig = px.choropleth(df,
+                                     locations="ISO",
+                                     color=colorby,
+                                     hover_name="Country",
+                                     animation_frame="Year",
+                                     color_continuous_scale=px.colors.sequential.Plasma)
+        elif on_hover is not None and animation_frame is None:
+            self.fig = px.choropleth(df,
+                                     locations="ISO",
+                                     color=colorby,
+                                     hover_name="Country",
+                                     color_continuous_scale=px.colors.sequential.Plasma,
+                                     hover_data=on_hover)
         else:
             self.fig = px.choropleth(df,
                                      locations="ISO",
                                      color=colorby,
                                      hover_name="Country",
+                                     animation_frame="Year",
                                      color_continuous_scale=px.colors.sequential.Plasma,
                                      hover_data=on_hover)
         self.fig.update_layout(height=700)

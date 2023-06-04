@@ -24,7 +24,7 @@ def get_life_data():
     df_life = get_country_codes(df_life, "Country")
     df_life = df_life[df_life["Life expectancy "].notna()]
 
-    return df_life
+    return df_life.sort_values(by='Year')
 
 
 def get_happiness_data():
