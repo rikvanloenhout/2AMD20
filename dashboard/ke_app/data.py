@@ -337,6 +337,6 @@ def get_merged(x1,x2,x3,x4):
 
     df['Aggregate Scores'] = (x1/summ)*(1-df['Mean Crime Index']) + (x2/summ)*df['Life expectancy ']\
                              + (x3/summ)*df['Happiness Score'] + (x4/summ)*(1-df['Gini'])
-
-    df['Rank'] = df['Aggregate Scores'].rank()
+    df = df.sort_values(by='Aggregate Scores')
+    df['Rank'] = df['Aggregate Scores'].rank(ascending=False)
     return df.sort_values(by="Rank")
