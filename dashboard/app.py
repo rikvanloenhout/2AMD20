@@ -44,7 +44,15 @@ if __name__ == '__main__':
                 children=[
                     cloroMap1,
                     frequencyPlot1,
-
+                    html.Div(
+                        className="graph_card",
+                        children=[
+                            html.H6("Knowledge graph"),
+                            html.Img(src="../assets/ke.png", style={"width": "50%",
+                                                                    "display": "block",
+                                                                    "margin-left": "auto",
+                                                                    "margin-right": "auto"}),
+                        ]),
                 ],
             ),
             # dash_table.DataTable(df_merged[['Country', 'Rank']].head(5).to_dict('records'))
