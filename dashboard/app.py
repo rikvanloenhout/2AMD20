@@ -220,7 +220,7 @@ if __name__ == '__main__':
                     html.Div(
                         className="graph_card",
                         children=[
-                            html.H6("Knowledge graph"),
+                            html.H6("Knowledge graph equal importance"),
                             html.Iframe(srcDoc=nt.html,
                                         style={"height": "1067px", "width": "100%"}),
                         ]),
