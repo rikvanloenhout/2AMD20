@@ -179,9 +179,9 @@ for edge in G.edges:
     nt.add_edge(edge[0], edge[1], color="gray", width=1, \
                 label=kg_df[(kg_df['source'] == edge[0]) & (kg_df['target'] == edge[1])]['edge'][0])
 
-nt.show_buttons(filter_=['nodes'])
+# nt.show_buttons(filter_=['nodes'])
 
-nt.show('kg.html')
+# nt.show('kg.html')
 
 
 if __name__ == '__main__':

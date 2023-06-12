@@ -135,8 +135,8 @@ ll = ['Crime', 'Life', 'Happiness', 'Poverty']
 
 from pyvis.network import Network
 
-nt = Network('1920px', '1080px', directed=True, notebook=False, select_menu=True,
-             filter_menu=True, )
+nt = Network('1920px', '1080px', directed=True, notebook=False, select_menu=False,
+             filter_menu=False, )
 # nt.barnes_hut()
 for node in G:
     if node == "Quality of Life":
