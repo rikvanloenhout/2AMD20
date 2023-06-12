@@ -1,0 +1,788 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        
+            <script src="lib/bindings/utils.js"></script>
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/dist/vis-network.min.css" integrity="sha512-WgxfT5LWjfszlPHXRmBWHkV2eceiWTOBvrKCNbdgDYTHrT2AeLCGbF4sZlZw3UMN3WtL0tGUoIAKsu8mllg/XA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/vis-network.min.js" integrity="sha512-LnvoEWDFrqGHlHmDD2101OrLcbsfkrzoSpvtSQtxK3RMnRV0eOkhhBN2dXHKRrUU8p2DGRTk35n4O8nWSVe1mQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+            
+                <link href="lib/tom-select/tom-select.css" rel="stylesheet">
+                <script src="lib/tom-select/tom-select.complete.min.js"></script>
+            
+        
+<center>
+<h1></h1>
+</center>
+
+<!-- <link rel="stylesheet" href="../node_modules/vis/dist/vis.min.css" type="text/css" />
+<script type="text/javascript" src="../node_modules/vis/dist/vis.js"> </script>-->
+        <link
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6"
+          crossorigin="anonymous"
+        />
+        <script
+          src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js"
+          integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf"
+          crossorigin="anonymous"
+        ></script>
+
+
+        <center>
+          <h1></h1>
+        </center>
+        <style type="text/css">
+
+             #mynetwork {
+                 width: 1080px;
+                 height: 1920px;
+                 background-color: #ffffff;
+                 border: 1px solid lightgray;
+                 position: relative;
+                 float: left;
+             }
+
+             
+             #loadingBar {
+                 position:absolute;
+                 top:0px;
+                 left:0px;
+                 width: 1080px;
+                 height: 1920px;
+                 background-color:rgba(200,200,200,0.8);
+                 -webkit-transition: all 0.5s ease;
+                 -moz-transition: all 0.5s ease;
+                 -ms-transition: all 0.5s ease;
+                 -o-transition: all 0.5s ease;
+                 transition: all 0.5s ease;
+                 opacity:1;
+             }
+
+             #bar {
+                 position:absolute;
+                 top:0px;
+                 left:0px;
+                 width:20px;
+                 height:20px;
+                 margin:auto auto auto auto;
+                 border-radius:11px;
+                 border:2px solid rgba(30,30,30,0.05);
+                 background: rgb(0, 173, 246); /* Old browsers */
+                 box-shadow: 2px 0px 4px rgba(0,0,0,0.4);
+             }
+
+             #border {
+                 position:absolute;
+                 top:10px;
+                 left:10px;
+                 width:500px;
+                 height:23px;
+                 margin:auto auto auto auto;
+                 box-shadow: 0px 0px 4px rgba(0,0,0,0.2);
+                 border-radius:10px;
+             }
+
+             #text {
+                 position:absolute;
+                 top:8px;
+                 left:530px;
+                 width:30px;
+                 height:50px;
+                 margin:auto auto auto auto;
+                 font-size:22px;
+                 color: #000000;
+             }
+
+             div.outerBorder {
+                 position:relative;
+                 top:400px;
+                 width:600px;
+                 height:44px;
+                 margin:auto auto auto auto;
+                 border:8px solid rgba(0,0,0,0.1);
+                 background: rgb(252,252,252); /* Old browsers */
+                 background: -moz-linear-gradient(top,  rgba(252,252,252,1) 0%, rgba(237,237,237,1) 100%); /* FF3.6+ */
+                 background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(252,252,252,1)), color-stop(100%,rgba(237,237,237,1))); /* Chrome,Safari4+ */
+                 background: -webkit-linear-gradient(top,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* Chrome10+,Safari5.1+ */
+                 background: -o-linear-gradient(top,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* Opera 11.10+ */
+                 background: -ms-linear-gradient(top,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* IE10+ */
+                 background: linear-gradient(to bottom,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* W3C */
+                 filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#fcfcfc', endColorstr='#ededed',GradientType=0 ); /* IE6-9 */
+                 border-radius:72px;
+                 box-shadow: 0px 0px 10px rgba(0,0,0,0.2);
+             }
+             
+
+             
+             #config {
+                 float: left;
+                 width: 400px;
+                 height: 600px;
+             }
+             
+
+             
+        </style>
+    </head>
+
+
+    <body>
+        <div class="card" style="width: 100%">
+            
+                <div id="select-menu" class="card-header">
+                    <div class="row no-gutters">
+                        <div class="col-10 pb-2">
+                            <select
+                            class="form-select"
+                            aria-label="Default select example"
+                            onchange="selectNode([value]);"
+                            id="select-node"
+                            placeholder="Select node..."
+                            >
+                                <option selected>Select a Node by ID</option>
+                                
+                                    <option value="World">World</option>
+                                
+                                    <option value="Europe">Europe</option>
+                                
+                                    <option value="Asia">Asia</option>
+                                
+                                    <option value="Americas">Americas</option>
+                                
+                                    <option value="Africa">Africa</option>
+                                
+                                    <option value="Northern Europe">Northern Europe</option>
+                                
+                                    <option value="Western Europe">Western Europe</option>
+                                
+                                    <option value="Southern Europe">Southern Europe</option>
+                                
+                                    <option value="Western Asia">Western Asia</option>
+                                
+                                    <option value="Eastern Europe">Eastern Europe</option>
+                                
+                                    <option value="South-eastern Asia">South-eastern Asia</option>
+                                
+                                    <option value="Central Asia">Central Asia</option>
+                                
+                                    <option value="Latin America and the Caribbean">Latin America and the Caribbean</option>
+                                
+                                    <option value="Eastern Asia">Eastern Asia</option>
+                                
+                                    <option value="Northern Africa">Northern Africa</option>
+                                
+                                    <option value="Southern Asia">Southern Asia</option>
+                                
+                                    <option value="Sub-Saharan Africa">Sub-Saharan Africa</option>
+                                
+                                    <option value="Denmark">Denmark</option>
+                                
+                                    <option value="Switzerland">Switzerland</option>
+                                
+                                    <option value="Norway">Norway</option>
+                                
+                                    <option value="Finland">Finland</option>
+                                
+                                    <option value="Netherlands">Netherlands</option>
+                                
+                                    <option value="Slovenia">Slovenia</option>
+                                
+                                    <option value="Austria">Austria</option>
+                                
+                                    <option value="Sweden">Sweden</option>
+                                
+                                    <option value="Luxembourg">Luxembourg</option>
+                                
+                                    <option value="Belgium">Belgium</option>
+                                
+                                    <option value="Germany">Germany</option>
+                                
+                                    <option value="Ireland">Ireland</option>
+                                
+                                    <option value="Cyprus">Cyprus</option>
+                                
+                                    <option value="Spain">Spain</option>
+                                
+                                    <option value="Croatia">Croatia</option>
+                                
+                                    <option value="France">France</option>
+                                
+                                    <option value="Estonia">Estonia</option>
+                                
+                                    <option value="Poland">Poland</option>
+                                
+                                    <option value="Italy">Italy</option>
+                                
+                                    <option value="Thailand">Thailand</option>
+                                
+                                    <option value="Serbia">Serbia</option>
+                                
+                                    <option value="Kazakhstan">Kazakhstan</option>
+                                
+                                    <option value="Portugal">Portugal</option>
+                                
+                                    <option value="Hungary">Hungary</option>
+                                
+                                    <option value="Lithuania">Lithuania</option>
+                                
+                                    <option value="Armenia">Armenia</option>
+                                
+                                    <option value="Belarus">Belarus</option>
+                                
+                                    <option value="Chile">Chile</option>
+                                
+                                    <option value="Costa Rica">Costa Rica</option>
+                                
+                                    <option value="Romania">Romania</option>
+                                
+                                    <option value="Uruguay">Uruguay</option>
+                                
+                                    <option value="Latvia">Latvia</option>
+                                
+                                    <option value="China">China</option>
+                                
+                                    <option value="Turkey">Turkey</option>
+                                
+                                    <option value="Panama">Panama</option>
+                                
+                                    <option value="Ukraine">Ukraine</option>
+                                
+                                    <option value="Georgia">Georgia</option>
+                                
+                                    <option value="Greece">Greece</option>
+                                
+                                    <option value="Tunisia">Tunisia</option>
+                                
+                                    <option value="Malaysia">Malaysia</option>
+                                
+                                    <option value="Pakistan">Pakistan</option>
+                                
+                                    <option value="Ecuador">Ecuador</option>
+                                
+                                    <option value="Paraguay">Paraguay</option>
+                                
+                                    <option value="El Salvador">El Salvador</option>
+                                
+                                    <option value="Brazil">Brazil</option>
+                                
+                                    <option value="Indonesia">Indonesia</option>
+                                
+                                    <option value="Colombia">Colombia</option>
+                                
+                                    <option value="Philippines">Philippines</option>
+                                
+                                    <option value="Peru">Peru</option>
+                                
+                                    <option value="Ethiopia">Ethiopia</option>
+                                
+                                    <option value="Dominican Republic">Dominican Republic</option>
+                                
+                                    <option value="Kenya">Kenya</option>
+                                
+                                    <option value="Honduras">Honduras</option>
+                                
+                                    <option value="Botswana">Botswana</option>
+                                
+                                    <option value="1.0">1.0</option>
+                                
+                                    <option value="2.0">2.0</option>
+                                
+                                    <option value="3.0">3.0</option>
+                                
+                                    <option value="4.0">4.0</option>
+                                
+                                    <option value="5.0">5.0</option>
+                                
+                                    <option value="6.0">6.0</option>
+                                
+                                    <option value="7.0">7.0</option>
+                                
+                                    <option value="8.0">8.0</option>
+                                
+                                    <option value="9.0">9.0</option>
+                                
+                                    <option value="10.0">10.0</option>
+                                
+                                    <option value="11.0">11.0</option>
+                                
+                                    <option value="12.0">12.0</option>
+                                
+                                    <option value="13.0">13.0</option>
+                                
+                                    <option value="14.0">14.0</option>
+                                
+                                    <option value="15.0">15.0</option>
+                                
+                                    <option value="16.0">16.0</option>
+                                
+                                    <option value="17.0">17.0</option>
+                                
+                                    <option value="18.0">18.0</option>
+                                
+                                    <option value="19.0">19.0</option>
+                                
+                                    <option value="20.0">20.0</option>
+                                
+                                    <option value="21.0">21.0</option>
+                                
+                                    <option value="22.0">22.0</option>
+                                
+                                    <option value="23.0">23.0</option>
+                                
+                                    <option value="24.0">24.0</option>
+                                
+                                    <option value="25.0">25.0</option>
+                                
+                                    <option value="26.0">26.0</option>
+                                
+                                    <option value="27.0">27.0</option>
+                                
+                                    <option value="28.0">28.0</option>
+                                
+                                    <option value="29.0">29.0</option>
+                                
+                                    <option value="30.0">30.0</option>
+                                
+                                    <option value="31.0">31.0</option>
+                                
+                                    <option value="32.0">32.0</option>
+                                
+                                    <option value="33.0">33.0</option>
+                                
+                                    <option value="34.0">34.0</option>
+                                
+                                    <option value="35.0">35.0</option>
+                                
+                                    <option value="36.0">36.0</option>
+                                
+                                    <option value="37.0">37.0</option>
+                                
+                                    <option value="38.0">38.0</option>
+                                
+                                    <option value="39.0">39.0</option>
+                                
+                                    <option value="40.0">40.0</option>
+                                
+                                    <option value="41.0">41.0</option>
+                                
+                                    <option value="42.0">42.0</option>
+                                
+                                    <option value="43.0">43.0</option>
+                                
+                                    <option value="44.0">44.0</option>
+                                
+                                    <option value="45.0">45.0</option>
+                                
+                                    <option value="46.0">46.0</option>
+                                
+                                    <option value="47.0">47.0</option>
+                                
+                                    <option value="48.0">48.0</option>
+                                
+                                    <option value="49.0">49.0</option>
+                                
+                                    <option value="50.0">50.0</option>
+                                
+                                    <option value="51.0">51.0</option>
+                                
+                                    <option value="52.0">52.0</option>
+                                
+                                    <option value="53.0">53.0</option>
+                                
+                                    <option value="54.0">54.0</option>
+                                
+                                    <option value="Quality of Life">Quality of Life</option>
+                                
+                                    <option value="Crime">Crime</option>
+                                
+                                    <option value="Life">Life</option>
+                                
+                                    <option value="Happiness">Happiness</option>
+                                
+                                    <option value="Poverty">Poverty</option>
+                                
+                                    <option value="Mean Crime Index">Mean Crime Index</option>
+                                
+                                    <option value="Min Crime Index">Min Crime Index</option>
+                                
+                                    <option value="Max Crime Index">Max Crime Index</option>
+                                
+                                    <option value="Status">Status</option>
+                                
+                                    <option value="Life expectancy ">Life expectancy </option>
+                                
+                                    <option value="Adult Mortality">Adult Mortality</option>
+                                
+                                    <option value="infant deaths">infant deaths</option>
+                                
+                                    <option value="Alcohol">Alcohol</option>
+                                
+                                    <option value="percentage expenditure">percentage expenditure</option>
+                                
+                                    <option value="Hepatitis B">Hepatitis B</option>
+                                
+                                    <option value="Measles ">Measles </option>
+                                
+                                    <option value=" BMI "> BMI </option>
+                                
+                                    <option value="under-five deaths ">under-five deaths </option>
+                                
+                                    <option value="Polio">Polio</option>
+                                
+                                    <option value="Total expenditure">Total expenditure</option>
+                                
+                                    <option value="Diphtheria ">Diphtheria </option>
+                                
+                                    <option value=" HIV/AIDS"> HIV/AIDS</option>
+                                
+                                    <option value="GDP">GDP</option>
+                                
+                                    <option value="Population">Population</option>
+                                
+                                    <option value=" thinness  1-19 years"> thinness  1-19 years</option>
+                                
+                                    <option value=" thinness 5-9 years"> thinness 5-9 years</option>
+                                
+                                    <option value="Income composition of resources">Income composition of resources</option>
+                                
+                                    <option value="Schooling">Schooling</option>
+                                
+                                    <option value="Economy (GDP per Capita)">Economy (GDP per Capita)</option>
+                                
+                                    <option value="Family">Family</option>
+                                
+                                    <option value="Freedom">Freedom</option>
+                                
+                                    <option value="Trust (Government Corruption)">Trust (Government Corruption)</option>
+                                
+                                    <option value="Generosity">Generosity</option>
+                                
+                                    <option value="Dystopia Residual">Dystopia Residual</option>
+                                
+                                    <option value="Social support">Social support</option>
+                                
+                                    <option value="Gini">Gini</option>
+                                
+                            </select>
+                        </div>
+                        <div class="col-2 pb-2">
+                            <button type="button" class="btn btn-primary btn-block" onclick="neighbourhoodHighlight({nodes: []});">Reset Selection</button>
+                        </div>
+                    </div>
+                </div>
+            
+            
+              <div id="filter-menu" class="card-header">
+                <div class="row no-gutters">
+                  <div class="col-3 pb-2">
+                    <select
+                            class="form-select"
+                            aria-label="Default select example"
+                            onchange="updateFilter(value, 'item')"
+                            id="select-item"
+                        >
+                        <option value="">Select a network item</option>
+                        <option value="edge">edge</option>
+                        <option value="node">node</option>
+                    </select>
+                  </div>
+                  <div class="col-3 pb-2">
+                    <select
+                            class="form-select"
+                            aria-label="Default select example"
+                            onchange="updateFilter(value, 'property')"
+                            id="select-property"
+                        >
+                        <option value="">Select a property...</option>
+                    </select>
+                  </div>
+                  <div class="col-3 pb-2">
+                    <select
+                            class="form-select"
+                            aria-label="Default select example"
+                            id="select-value"
+                        >
+                        <option value="">Select value(s)...</option>
+                    </select>
+                  </div>
+                  <div class="col-1 pb-2">
+                    <button type="button" class="btn btn-primary btn-block" onclick="highlightFilter(filter);">Filter</button>
+                  </div>
+                  <div class="col-2 pb-2">
+                    <button type="button" class="btn btn-primary btn-block" onclick="clearFilter(true)">Reset Selection</button>
+                  </div>
+                </div>
+              </div>
+            
+            <div id="mynetwork" class="card-body"></div>
+        </div>
+
+        
+            <div id="loadingBar">
+              <div class="outerBorder">
+                <div id="text">0%</div>
+                <div id="border">
+                  <div id="bar"></div>
+                </div>
+              </div>
+            </div>
+        
+        
+            <div id="config"></div>
+        
+
+        <script type="text/javascript">
+
+              // initialize global variables.
+              var edges;
+              var nodes;
+              var allNodes;
+              var allEdges;
+              var nodeColors;
+              var originalNodes;
+              var network;
+              var container;
+              var options, data;
+              var filter = {
+                  item : '',
+                  property : '',
+                  value : []
+              };
+
+              
+                  new TomSelect("#select-node",{
+                      create: false,
+                      sortField: {
+                          field: "text",
+                          direction: "asc"
+                      }
+                  });
+              
+
+              
+                  // explicitly using onItemAdd and this function as we need to save multiple values
+                  let updateValueFilter = function() {
+                      return function () {
+                      filter['value'].push(arguments[0])
+                      }
+                  }
+
+                  let valueControl = new TomSelect("#select-value",{
+                      maxItems: null,
+                      valueField: 'id',
+                      labelField: 'title',
+                      searchField: 'title',
+                      create: false,
+                      sortField: {
+                          field: "text",
+                          direction: "asc"
+                      },
+                      onItemAdd: updateValueFilter()
+                  });
+
+                  let addValues = function() {
+                      return function () {
+                          // clear the current value options and add the selected attribute values
+                          // tom-select handles duplicates
+                          let selectedProperty = arguments[0];
+                          valueControl.clear();
+                          valueControl.clearOptions();
+                          filter['value'] = []
+                          if (filter['item'] === 'node') {
+                              for (let each in allNodes) {
+                                  valueControl.addOption({
+                                      id:allNodes[each][selectedProperty],
+                                      title:allNodes[each][selectedProperty]
+                                  })
+                              }
+                          }
+                          else if (filter['item'] === 'edge') {
+                              for (let each in allEdges) {
+                                  valueControl.addOption({
+                                      id:allEdges[each][selectedProperty],
+                                      title:allEdges[each][selectedProperty]
+                                  })
+                              }
+                          }
+                      }
+                  };
+
+                  let propControl = new TomSelect("#select-property",{
+                      valueField: 'id',
+                      labelField: 'title',
+                      searchField: 'title',
+                      create: false,
+                      sortField: {
+                          field: "text",
+                          direction: "asc"
+                      },
+                      onItemAdd: addValues()
+                  });
+
+                  let addProperties = function() {
+                      return function () {
+                          // loops through the selected network item and adds the attributes to dropdown
+                          // tom-select handles duplicates
+                          clearFilter(false)
+                          if (arguments[0] === 'edge') {
+                              for (let each in allEdges) {
+                                  if (allEdges.hasOwnProperty(each)) {
+                                      for (let eachProp in allEdges[each]) {
+                                          if (allEdges[each].hasOwnProperty(eachProp)) {
+                                              propControl.addOption({id: eachProp, title: eachProp})
+                                          }
+                                      }
+                                  }
+                              }
+                          }
+                          else if (arguments[0] === 'node') {
+                              for (let each in allNodes) {
+                                  if (allNodes.hasOwnProperty(each)) {
+                                      for (let eachProp in allNodes[each]) {
+                                          if (allNodes[each].hasOwnProperty(eachProp)
+                                              && (eachProp !== 'hidden' && eachProp !== 'savedLabel'
+                                                  && eachProp !== 'hiddenLabel')) {
+                                              propControl.addOption({id: eachProp, title: eachProp})
+
+                                          }
+                                      }
+                                  }
+                              }
+                          }
+                      }
+                  };
+
+                  let itemControl = new TomSelect("#select-item",{
+                      create: false,
+                      sortField:{
+                          field: "text",
+                          direction: "asc"
+                      },
+                      onItemAdd: addProperties()
+                  });
+
+                  function clearFilter(reset) {
+                      // utility function to clear all the selected filter options
+                      // if reset is set to true, the existing filter will be removed
+                      // else, only the dropdown options are cleared
+                      propControl.clear();
+                      propControl.clearOptions();
+                      valueControl.clear();
+                      valueControl.clearOptions();
+                      filter = {
+                          item : '',
+                          property : '',
+                          value : []
+                      }
+                      if (reset) {
+                          itemControl.clear();
+                          filterHighlight({nodes: []})
+                      }
+                  }
+
+                  function updateFilter(value, key) {
+                      // key could be 'item' or 'property' and value is as selected in dropdown
+                      filter[key] = value
+                  }
+
+              
+
+              // This method is responsible for drawing the graph, returns the drawn network
+              function drawGraph() {
+                  var container = document.getElementById('mynetwork');
+
+                  
+
+                  // parsing and collecting nodes and edges from the python
+                  nodes = new vis.DataSet([{"color": "yellow", "id": "World", "label": "World", "shape": "dot", "size": 20}, {"color": "orange", "id": "Europe", "label": "Europe", "shape": "dot", "size": 15}, {"color": "orange", "id": "Asia", "label": "Asia", "shape": "dot", "size": 15}, {"color": "orange", "id": "Americas", "label": "Americas", "shape": "dot", "size": 15}, {"color": "orange", "id": "Africa", "label": "Africa", "shape": "dot", "size": 15}, {"color": "green", "id": "Northern Europe", "label": "Northern Europe", "shape": "dot", "size": 10}, {"color": "green", "id": "Western Europe", "label": "Western Europe", "shape": "dot", "size": 10}, {"color": "green", "id": "Southern Europe", "label": "Southern Europe", "shape": "dot", "size": 10}, {"color": "green", "id": "Western Asia", "label": "Western Asia", "shape": "dot", "size": 10}, {"color": "green", "id": "Eastern Europe", "label": "Eastern Europe", "shape": "dot", "size": 10}, {"color": "green", "id": "South-eastern Asia", "label": "South-eastern Asia", "shape": "dot", "size": 10}, {"color": "green", "id": "Central Asia", "label": "Central Asia", "shape": "dot", "size": 10}, {"color": "green", "id": "Latin America and the Caribbean", "label": "Latin America and the Caribbean", "shape": "dot", "size": 10}, {"color": "green", "id": "Eastern Asia", "label": "Eastern Asia", "shape": "dot", "size": 10}, {"color": "green", "id": "Northern Africa", "label": "Northern Africa", "shape": "dot", "size": 10}, {"color": "green", "id": "Southern Asia", "label": "Southern Asia", "shape": "dot", "size": 10}, {"color": "green", "id": "Sub-Saharan Africa", "label": "Sub-Saharan Africa", "shape": "dot", "size": 10}, {"color": "lightgray", "id": "Denmark", "label": "Denmark", "shape": "dot", "size": 10}, {"color": "lightgray", "id": "Switzerland", "label": "Switzerland", "shape": "dot", "size": 10}, {"color": "lightgray", "id": "Norway", "label": "Norway", "shape": "dot", "size": 10}, {"color": "lightgray", "id": "Finland", "label": "Finland", "shape": "dot", "size": 10}, {"color": "lightgray", "id": "Netherlands", "label": "Netherlands", "shape": "dot", "size": 10}, {"color": "lightgray", "id": "Slovenia", "label": "Slovenia", "shape": "dot", "size": 10}, {"color": "lightgray", "id": "Austria", "label": "Austria", "shape": "dot", "size": 10}, {"color": "lightgray", "id": "Sweden", "label": "Sweden", "shape": "dot", "size": 10}, {"color": "lightgray", "id": "Luxembourg", "label": "Luxembourg", "shape": "dot", "size": 10}, {"color": "lightgray", "id": "Belgium", "label": "Belgium", "shape": "dot", "size": 10}, {"color": "lightgray", "id": "Germany", "label": "Germany", "shape": "dot", "size": 10}, {"color": "lightgray", "id": "Ireland", "label": "Ireland", "shape": "dot", "size": 10}, {"color": "lightgray", "id": "Cyprus", "label": "Cyprus", "shape": "dot", "size": 10}, {"color": "lightgray", "id": "Spain", "label": "Spain", "shape": "dot", "size": 10}, {"color": "lightgray", "id": "Croatia", "label": "Croatia", "shape": "dot", "size": 10}, {"color": "lightgray", "id": "France", "label": "France", "shape": "dot", "size": 10}, {"color": "lightgray", "id": "Estonia", "label": "Estonia", "shape": "dot", "size": 10}, {"color": "lightgray", "id": "Poland", "label": "Poland", "shape": "dot", "size": 10}, {"color": "lightgray", "id": "Italy", "label": "Italy", "shape": "dot", "size": 10}, {"color": "lightgray", "id": "Thailand", "label": "Thailand", "shape": "dot", "size": 10}, {"color": "lightgray", "id": "Serbia", "label": "Serbia", "shape": "dot", "size": 10}, {"color": "lightgray", "id": "Kazakhstan", "label": "Kazakhstan", "shape": "dot", "size": 10}, {"color": "lightgray", "id": "Portugal", "label": "Portugal", "shape": "dot", "size": 10}, {"color": "lightgray", "id": "Hungary", "label": "Hungary", "shape": "dot", "size": 10}, {"color": "lightgray", "id": "Lithuania", "label": "Lithuania", "shape": "dot", "size": 10}, {"color": "lightgray", "id": "Armenia", "label": "Armenia", "shape": "dot", "size": 10}, {"color": "lightgray", "id": "Belarus", "label": "Belarus", "shape": "dot", "size": 10}, {"color": "lightgray", "id": "Chile", "label": "Chile", "shape": "dot", "size": 10}, {"color": "lightgray", "id": "Costa Rica", "label": "Costa Rica", "shape": "dot", "size": 10}, {"color": "lightgray", "id": "Romania", "label": "Romania", "shape": "dot", "size": 10}, {"color": "lightgray", "id": "Uruguay", "label": "Uruguay", "shape": "dot", "size": 10}, {"color": "lightgray", "id": "Latvia", "label": "Latvia", "shape": "dot", "size": 10}, {"color": "lightgray", "id": "China", "label": "China", "shape": "dot", "size": 10}, {"color": "lightgray", "id": "Turkey", "label": "Turkey", "shape": "dot", "size": 10}, {"color": "lightgray", "id": "Panama", "label": "Panama", "shape": "dot", "size": 10}, {"color": "lightgray", "id": "Ukraine", "label": "Ukraine", "shape": "dot", "size": 10}, {"color": "lightgray", "id": "Georgia", "label": "Georgia", "shape": "dot", "size": 10}, {"color": "lightgray", "id": "Greece", "label": "Greece", "shape": "dot", "size": 10}, {"color": "lightgray", "id": "Tunisia", "label": "Tunisia", "shape": "dot", "size": 10}, {"color": "lightgray", "id": "Malaysia", "label": "Malaysia", "shape": "dot", "size": 10}, {"color": "lightgray", "id": "Pakistan", "label": "Pakistan", "shape": "dot", "size": 10}, {"color": "lightgray", "id": "Ecuador", "label": "Ecuador", "shape": "dot", "size": 10}, {"color": "lightgray", "id": "Paraguay", "label": "Paraguay", "shape": "dot", "size": 10}, {"color": "lightgray", "id": "El Salvador", "label": "El Salvador", "shape": "dot", "size": 10}, {"color": "lightgray", "id": "Brazil", "label": "Brazil", "shape": "dot", "size": 10}, {"color": "lightgray", "id": "Indonesia", "label": "Indonesia", "shape": "dot", "size": 10}, {"color": "lightgray", "id": "Colombia", "label": "Colombia", "shape": "dot", "size": 10}, {"color": "lightgray", "id": "Philippines", "label": "Philippines", "shape": "dot", "size": 10}, {"color": "lightgray", "id": "Peru", "label": "Peru", "shape": "dot", "size": 10}, {"color": "lightgray", "id": "Ethiopia", "label": "Ethiopia", "shape": "dot", "size": 10}, {"color": "lightgray", "id": "Dominican Republic", "label": "Dominican Republic", "shape": "dot", "size": 10}, {"color": "lightgray", "id": "Kenya", "label": "Kenya", "shape": "dot", "size": 10}, {"color": "lightgray", "id": "Honduras", "label": "Honduras", "shape": "dot", "size": 10}, {"color": "lightgray", "id": "Botswana", "label": "Botswana", "shape": "dot", "size": 10}, {"color": "black", "id": "1.0", "label": "1.0", "shape": "dot", "size": 10}, {"color": "black", "id": "2.0", "label": "2.0", "shape": "dot", "size": 10}, {"color": "black", "id": "3.0", "label": "3.0", "shape": "dot", "size": 10}, {"color": "black", "id": "4.0", "label": "4.0", "shape": "dot", "size": 10}, {"color": "black", "id": "5.0", "label": "5.0", "shape": "dot", "size": 10}, {"color": "black", "id": "6.0", "label": "6.0", "shape": "dot", "size": 10}, {"color": "black", "id": "7.0", "label": "7.0", "shape": "dot", "size": 10}, {"color": "black", "id": "8.0", "label": "8.0", "shape": "dot", "size": 10}, {"color": "black", "id": "9.0", "label": "9.0", "shape": "dot", "size": 10}, {"color": "black", "id": "10.0", "label": "10.0", "shape": "dot", "size": 10}, {"color": "black", "id": "11.0", "label": "11.0", "shape": "dot", "size": 10}, {"color": "black", "id": "12.0", "label": "12.0", "shape": "dot", "size": 10}, {"color": "black", "id": "13.0", "label": "13.0", "shape": "dot", "size": 10}, {"color": "black", "id": "14.0", "label": "14.0", "shape": "dot", "size": 10}, {"color": "black", "id": "15.0", "label": "15.0", "shape": "dot", "size": 10}, {"color": "black", "id": "16.0", "label": "16.0", "shape": "dot", "size": 10}, {"color": "black", "id": "17.0", "label": "17.0", "shape": "dot", "size": 10}, {"color": "black", "id": "18.0", "label": "18.0", "shape": "dot", "size": 10}, {"color": "black", "id": "19.0", "label": "19.0", "shape": "dot", "size": 10}, {"color": "black", "id": "20.0", "label": "20.0", "shape": "dot", "size": 10}, {"color": "black", "id": "21.0", "label": "21.0", "shape": "dot", "size": 10}, {"color": "black", "id": "22.0", "label": "22.0", "shape": "dot", "size": 10}, {"color": "black", "id": "23.0", "label": "23.0", "shape": "dot", "size": 10}, {"color": "black", "id": "24.0", "label": "24.0", "shape": "dot", "size": 10}, {"color": "black", "id": "25.0", "label": "25.0", "shape": "dot", "size": 10}, {"color": "black", "id": "26.0", "label": "26.0", "shape": "dot", "size": 10}, {"color": "black", "id": "27.0", "label": "27.0", "shape": "dot", "size": 10}, {"color": "black", "id": "28.0", "label": "28.0", "shape": "dot", "size": 10}, {"color": "black", "id": "29.0", "label": "29.0", "shape": "dot", "size": 10}, {"color": "black", "id": "30.0", "label": "30.0", "shape": "dot", "size": 10}, {"color": "black", "id": "31.0", "label": "31.0", "shape": "dot", "size": 10}, {"color": "black", "id": "32.0", "label": "32.0", "shape": "dot", "size": 10}, {"color": "black", "id": "33.0", "label": "33.0", "shape": "dot", "size": 10}, {"color": "black", "id": "34.0", "label": "34.0", "shape": "dot", "size": 10}, {"color": "black", "id": "35.0", "label": "35.0", "shape": "dot", "size": 10}, {"color": "black", "id": "36.0", "label": "36.0", "shape": "dot", "size": 10}, {"color": "black", "id": "37.0", "label": "37.0", "shape": "dot", "size": 10}, {"color": "black", "id": "38.0", "label": "38.0", "shape": "dot", "size": 10}, {"color": "black", "id": "39.0", "label": "39.0", "shape": "dot", "size": 10}, {"color": "black", "id": "40.0", "label": "40.0", "shape": "dot", "size": 10}, {"color": "black", "id": "41.0", "label": "41.0", "shape": "dot", "size": 10}, {"color": "black", "id": "42.0", "label": "42.0", "shape": "dot", "size": 10}, {"color": "black", "id": "43.0", "label": "43.0", "shape": "dot", "size": 10}, {"color": "black", "id": "44.0", "label": "44.0", "shape": "dot", "size": 10}, {"color": "black", "id": "45.0", "label": "45.0", "shape": "dot", "size": 10}, {"color": "black", "id": "46.0", "label": "46.0", "shape": "dot", "size": 10}, {"color": "black", "id": "47.0", "label": "47.0", "shape": "dot", "size": 10}, {"color": "black", "id": "48.0", "label": "48.0", "shape": "dot", "size": 10}, {"color": "black", "id": "49.0", "label": "49.0", "shape": "dot", "size": 10}, {"color": "black", "id": "50.0", "label": "50.0", "shape": "dot", "size": 10}, {"color": "black", "id": "51.0", "label": "51.0", "shape": "dot", "size": 10}, {"color": "black", "id": "52.0", "label": "52.0", "shape": "dot", "size": 10}, {"color": "black", "id": "53.0", "label": "53.0", "shape": "dot", "size": 10}, {"color": "black", "id": "54.0", "label": "54.0", "shape": "dot", "size": 10}, {"color": "blue", "id": "Quality of Life", "label": "Quality of Life", "shape": "dot", "size": 20}, {"color": "purple", "id": "Crime", "label": "Crime", "shape": "dot", "size": 15}, {"color": "purple", "id": "Life", "label": "Life", "shape": "dot", "size": 15}, {"color": "purple", "id": "Happiness", "label": "Happiness", "shape": "dot", "size": 15}, {"color": "purple", "id": "Poverty", "label": "Poverty", "shape": "dot", "size": 15}, {"color": "black", "id": "Mean Crime Index", "label": "Mean Crime Index", "shape": "dot", "size": 10}, {"color": "black", "id": "Min Crime Index", "label": "Min Crime Index", "shape": "dot", "size": 10}, {"color": "black", "id": "Max Crime Index", "label": "Max Crime Index", "shape": "dot", "size": 10}, {"color": "black", "id": "Status", "label": "Status", "shape": "dot", "size": 10}, {"color": "black", "id": "Life expectancy ", "label": "Life expectancy ", "shape": "dot", "size": 10}, {"color": "black", "id": "Adult Mortality", "label": "Adult Mortality", "shape": "dot", "size": 10}, {"color": "black", "id": "infant deaths", "label": "infant deaths", "shape": "dot", "size": 10}, {"color": "black", "id": "Alcohol", "label": "Alcohol", "shape": "dot", "size": 10}, {"color": "black", "id": "percentage expenditure", "label": "percentage expenditure", "shape": "dot", "size": 10}, {"color": "black", "id": "Hepatitis B", "label": "Hepatitis B", "shape": "dot", "size": 10}, {"color": "black", "id": "Measles ", "label": "Measles ", "shape": "dot", "size": 10}, {"color": "black", "id": " BMI ", "label": " BMI ", "shape": "dot", "size": 10}, {"color": "black", "id": "under-five deaths ", "label": "under-five deaths ", "shape": "dot", "size": 10}, {"color": "black", "id": "Polio", "label": "Polio", "shape": "dot", "size": 10}, {"color": "black", "id": "Total expenditure", "label": "Total expenditure", "shape": "dot", "size": 10}, {"color": "black", "id": "Diphtheria ", "label": "Diphtheria ", "shape": "dot", "size": 10}, {"color": "black", "id": " HIV/AIDS", "label": " HIV/AIDS", "shape": "dot", "size": 10}, {"color": "black", "id": "GDP", "label": "GDP", "shape": "dot", "size": 10}, {"color": "black", "id": "Population", "label": "Population", "shape": "dot", "size": 10}, {"color": "black", "id": " thinness  1-19 years", "label": " thinness  1-19 years", "shape": "dot", "size": 10}, {"color": "black", "id": " thinness 5-9 years", "label": " thinness 5-9 years", "shape": "dot", "size": 10}, {"color": "black", "id": "Income composition of resources", "label": "Income composition of resources", "shape": "dot", "size": 10}, {"color": "black", "id": "Schooling", "label": "Schooling", "shape": "dot", "size": 10}, {"color": "black", "id": "Economy (GDP per Capita)", "label": "Economy (GDP per Capita)", "shape": "dot", "size": 10}, {"color": "black", "id": "Family", "label": "Family", "shape": "dot", "size": 10}, {"color": "black", "id": "Freedom", "label": "Freedom", "shape": "dot", "size": 10}, {"color": "black", "id": "Trust (Government Corruption)", "label": "Trust (Government Corruption)", "shape": "dot", "size": 10}, {"color": "black", "id": "Generosity", "label": "Generosity", "shape": "dot", "size": 10}, {"color": "black", "id": "Dystopia Residual", "label": "Dystopia Residual", "shape": "dot", "size": 10}, {"color": "black", "id": "Social support", "label": "Social support", "shape": "dot", "size": 10}, {"color": "black", "id": "Gini", "label": "Gini", "shape": "dot", "size": 10}]);
+                  edges = new vis.DataSet([{"arrows": "to", "color": "gray", "from": "World", "label": "part of", "to": "Europe", "width": 1}, {"arrows": "to", "color": "gray", "from": "World", "label": "part of", "to": "Asia", "width": 1}, {"arrows": "to", "color": "gray", "from": "World", "label": "part of", "to": "Americas", "width": 1}, {"arrows": "to", "color": "gray", "from": "World", "label": "part of", "to": "Africa", "width": 1}, {"arrows": "to", "color": "gray", "from": "Europe", "label": "part of", "to": "Northern Europe", "width": 1}, {"arrows": "to", "color": "gray", "from": "Europe", "label": "part of", "to": "Western Europe", "width": 1}, {"arrows": "to", "color": "gray", "from": "Europe", "label": "part of", "to": "Southern Europe", "width": 1}, {"arrows": "to", "color": "gray", "from": "Europe", "label": "part of", "to": "Eastern Europe", "width": 1}, {"arrows": "to", "color": "gray", "from": "Asia", "label": "part of", "to": "Western Asia", "width": 1}, {"arrows": "to", "color": "gray", "from": "Asia", "label": "part of", "to": "South-eastern Asia", "width": 1}, {"arrows": "to", "color": "gray", "from": "Asia", "label": "part of", "to": "Central Asia", "width": 1}, {"arrows": "to", "color": "gray", "from": "Asia", "label": "part of", "to": "Eastern Asia", "width": 1}, {"arrows": "to", "color": "gray", "from": "Asia", "label": "part of", "to": "Southern Asia", "width": 1}, {"arrows": "to", "color": "gray", "from": "Americas", "label": "part of", "to": "Latin America and the Caribbean", "width": 1}, {"arrows": "to", "color": "gray", "from": "Africa", "label": "part of", "to": "Northern Africa", "width": 1}, {"arrows": "to", "color": "gray", "from": "Africa", "label": "part of", "to": "Sub-Saharan Africa", "width": 1}, {"arrows": "to", "color": "gray", "from": "Northern Europe", "label": "contains", "to": "Denmark", "width": 1}, {"arrows": "to", "color": "gray", "from": "Northern Europe", "label": "contains", "to": "Norway", "width": 1}, {"arrows": "to", "color": "gray", "from": "Northern Europe", "label": "contains", "to": "Finland", "width": 1}, {"arrows": "to", "color": "gray", "from": "Northern Europe", "label": "contains", "to": "Sweden", "width": 1}, {"arrows": "to", "color": "gray", "from": "Northern Europe", "label": "contains", "to": "Ireland", "width": 1}, {"arrows": "to", "color": "gray", "from": "Northern Europe", "label": "contains", "to": "Estonia", "width": 1}, {"arrows": "to", "color": "gray", "from": "Northern Europe", "label": "contains", "to": "Lithuania", "width": 1}, {"arrows": "to", "color": "gray", "from": "Northern Europe", "label": "contains", "to": "Latvia", "width": 1}, {"arrows": "to", "color": "gray", "from": "Western Europe", "label": "contains", "to": "Switzerland", "width": 1}, {"arrows": "to", "color": "gray", "from": "Western Europe", "label": "contains", "to": "Netherlands", "width": 1}, {"arrows": "to", "color": "gray", "from": "Western Europe", "label": "contains", "to": "Austria", "width": 1}, {"arrows": "to", "color": "gray", "from": "Western Europe", "label": "contains", "to": "Luxembourg", "width": 1}, {"arrows": "to", "color": "gray", "from": "Western Europe", "label": "contains", "to": "Belgium", "width": 1}, {"arrows": "to", "color": "gray", "from": "Western Europe", "label": "contains", "to": "Germany", "width": 1}, {"arrows": "to", "color": "gray", "from": "Western Europe", "label": "contains", "to": "France", "width": 1}, {"arrows": "to", "color": "gray", "from": "Southern Europe", "label": "contains", "to": "Slovenia", "width": 1}, {"arrows": "to", "color": "gray", "from": "Southern Europe", "label": "contains", "to": "Spain", "width": 1}, {"arrows": "to", "color": "gray", "from": "Southern Europe", "label": "contains", "to": "Croatia", "width": 1}, {"arrows": "to", "color": "gray", "from": "Southern Europe", "label": "contains", "to": "Italy", "width": 1}, {"arrows": "to", "color": "gray", "from": "Southern Europe", "label": "contains", "to": "Serbia", "width": 1}, {"arrows": "to", "color": "gray", "from": "Southern Europe", "label": "contains", "to": "Portugal", "width": 1}, {"arrows": "to", "color": "gray", "from": "Southern Europe", "label": "contains", "to": "Greece", "width": 1}, {"arrows": "to", "color": "gray", "from": "Western Asia", "label": "contains", "to": "Cyprus", "width": 1}, {"arrows": "to", "color": "gray", "from": "Western Asia", "label": "contains", "to": "Armenia", "width": 1}, {"arrows": "to", "color": "gray", "from": "Western Asia", "label": "contains", "to": "Turkey", "width": 1}, {"arrows": "to", "color": "gray", "from": "Western Asia", "label": "contains", "to": "Georgia", "width": 1}, {"arrows": "to", "color": "gray", "from": "Eastern Europe", "label": "contains", "to": "Poland", "width": 1}, {"arrows": "to", "color": "gray", "from": "Eastern Europe", "label": "contains", "to": "Hungary", "width": 1}, {"arrows": "to", "color": "gray", "from": "Eastern Europe", "label": "contains", "to": "Belarus", "width": 1}, {"arrows": "to", "color": "gray", "from": "Eastern Europe", "label": "contains", "to": "Romania", "width": 1}, {"arrows": "to", "color": "gray", "from": "Eastern Europe", "label": "contains", "to": "Ukraine", "width": 1}, {"arrows": "to", "color": "gray", "from": "South-eastern Asia", "label": "contains", "to": "Thailand", "width": 1}, {"arrows": "to", "color": "gray", "from": "South-eastern Asia", "label": "contains", "to": "Malaysia", "width": 1}, {"arrows": "to", "color": "gray", "from": "South-eastern Asia", "label": "contains", "to": "Indonesia", "width": 1}, {"arrows": "to", "color": "gray", "from": "South-eastern Asia", "label": "contains", "to": "Philippines", "width": 1}, {"arrows": "to", "color": "gray", "from": "Central Asia", "label": "contains", "to": "Kazakhstan", "width": 1}, {"arrows": "to", "color": "gray", "from": "Latin America and the Caribbean", "label": "contains", "to": "Chile", "width": 1}, {"arrows": "to", "color": "gray", "from": "Latin America and the Caribbean", "label": "contains", "to": "Costa Rica", "width": 1}, {"arrows": "to", "color": "gray", "from": "Latin America and the Caribbean", "label": "contains", "to": "Uruguay", "width": 1}, {"arrows": "to", "color": "gray", "from": "Latin America and the Caribbean", "label": "contains", "to": "Panama", "width": 1}, {"arrows": "to", "color": "gray", "from": "Latin America and the Caribbean", "label": "contains", "to": "Ecuador", "width": 1}, {"arrows": "to", "color": "gray", "from": "Latin America and the Caribbean", "label": "contains", "to": "Paraguay", "width": 1}, {"arrows": "to", "color": "gray", "from": "Latin America and the Caribbean", "label": "contains", "to": "El Salvador", "width": 1}, {"arrows": "to", "color": "gray", "from": "Latin America and the Caribbean", "label": "contains", "to": "Brazil", "width": 1}, {"arrows": "to", "color": "gray", "from": "Latin America and the Caribbean", "label": "contains", "to": "Colombia", "width": 1}, {"arrows": "to", "color": "gray", "from": "Latin America and the Caribbean", "label": "contains", "to": "Peru", "width": 1}, {"arrows": "to", "color": "gray", "from": "Latin America and the Caribbean", "label": "contains", "to": "Dominican Republic", "width": 1}, {"arrows": "to", "color": "gray", "from": "Latin America and the Caribbean", "label": "contains", "to": "Honduras", "width": 1}, {"arrows": "to", "color": "gray", "from": "Eastern Asia", "label": "contains", "to": "China", "width": 1}, {"arrows": "to", "color": "gray", "from": "Northern Africa", "label": "contains", "to": "Tunisia", "width": 1}, {"arrows": "to", "color": "gray", "from": "Southern Asia", "label": "contains", "to": "Pakistan", "width": 1}, {"arrows": "to", "color": "gray", "from": "Sub-Saharan Africa", "label": "contains", "to": "Ethiopia", "width": 1}, {"arrows": "to", "color": "gray", "from": "Sub-Saharan Africa", "label": "contains", "to": "Kenya", "width": 1}, {"arrows": "to", "color": "gray", "from": "Sub-Saharan Africa", "label": "contains", "to": "Botswana", "width": 1}, {"arrows": "to", "color": "gray", "from": "Denmark", "label": "QoL Rank", "to": "1.0", "width": 1}, {"arrows": "to", "color": "gray", "from": "Switzerland", "label": "QoL Rank", "to": "2.0", "width": 1}, {"arrows": "to", "color": "gray", "from": "Norway", "label": "QoL Rank", "to": "3.0", "width": 1}, {"arrows": "to", "color": "gray", "from": "Finland", "label": "QoL Rank", "to": "4.0", "width": 1}, {"arrows": "to", "color": "gray", "from": "Netherlands", "label": "QoL Rank", "to": "5.0", "width": 1}, {"arrows": "to", "color": "gray", "from": "Slovenia", "label": "QoL Rank", "to": "6.0", "width": 1}, {"arrows": "to", "color": "gray", "from": "Austria", "label": "QoL Rank", "to": "7.0", "width": 1}, {"arrows": "to", "color": "gray", "from": "Sweden", "label": "QoL Rank", "to": "8.0", "width": 1}, {"arrows": "to", "color": "gray", "from": "Luxembourg", "label": "QoL Rank", "to": "9.0", "width": 1}, {"arrows": "to", "color": "gray", "from": "Belgium", "label": "QoL Rank", "to": "10.0", "width": 1}, {"arrows": "to", "color": "gray", "from": "Germany", "label": "QoL Rank", "to": "11.0", "width": 1}, {"arrows": "to", "color": "gray", "from": "Ireland", "label": "QoL Rank", "to": "12.0", "width": 1}, {"arrows": "to", "color": "gray", "from": "Cyprus", "label": "QoL Rank", "to": "13.0", "width": 1}, {"arrows": "to", "color": "gray", "from": "Spain", "label": "QoL Rank", "to": "14.0", "width": 1}, {"arrows": "to", "color": "gray", "from": "Croatia", "label": "QoL Rank", "to": "15.0", "width": 1}, {"arrows": "to", "color": "gray", "from": "France", "label": "QoL Rank", "to": "16.0", "width": 1}, {"arrows": "to", "color": "gray", "from": "Estonia", "label": "QoL Rank", "to": "17.0", "width": 1}, {"arrows": "to", "color": "gray", "from": "Poland", "label": "QoL Rank", "to": "18.0", "width": 1}, {"arrows": "to", "color": "gray", "from": "Italy", "label": "QoL Rank", "to": "19.0", "width": 1}, {"arrows": "to", "color": "gray", "from": "Thailand", "label": "QoL Rank", "to": "20.0", "width": 1}, {"arrows": "to", "color": "gray", "from": "Serbia", "label": "QoL Rank", "to": "21.0", "width": 1}, {"arrows": "to", "color": "gray", "from": "Kazakhstan", "label": "QoL Rank", "to": "22.0", "width": 1}, {"arrows": "to", "color": "gray", "from": "Portugal", "label": "QoL Rank", "to": "23.0", "width": 1}, {"arrows": "to", "color": "gray", "from": "Hungary", "label": "QoL Rank", "to": "24.0", "width": 1}, {"arrows": "to", "color": "gray", "from": "Lithuania", "label": "QoL Rank", "to": "25.0", "width": 1}, {"arrows": "to", "color": "gray", "from": "Armenia", "label": "QoL Rank", "to": "26.0", "width": 1}, {"arrows": "to", "color": "gray", "from": "Belarus", "label": "QoL Rank", "to": "27.0", "width": 1}, {"arrows": "to", "color": "gray", "from": "Chile", "label": "QoL Rank", "to": "28.0", "width": 1}, {"arrows": "to", "color": "gray", "from": "Costa Rica", "label": "QoL Rank", "to": "29.0", "width": 1}, {"arrows": "to", "color": "gray", "from": "Romania", "label": "QoL Rank", "to": "30.0", "width": 1}, {"arrows": "to", "color": "gray", "from": "Uruguay", "label": "QoL Rank", "to": "31.0", "width": 1}, {"arrows": "to", "color": "gray", "from": "Latvia", "label": "QoL Rank", "to": "32.0", "width": 1}, {"arrows": "to", "color": "gray", "from": "China", "label": "QoL Rank", "to": "33.0", "width": 1}, {"arrows": "to", "color": "gray", "from": "Turkey", "label": "QoL Rank", "to": "34.0", "width": 1}, {"arrows": "to", "color": "gray", "from": "Panama", "label": "QoL Rank", "to": "35.0", "width": 1}, {"arrows": "to", "color": "gray", "from": "Ukraine", "label": "QoL Rank", "to": "36.0", "width": 1}, {"arrows": "to", "color": "gray", "from": "Georgia", "label": "QoL Rank", "to": "37.0", "width": 1}, {"arrows": "to", "color": "gray", "from": "Greece", "label": "QoL Rank", "to": "38.0", "width": 1}, {"arrows": "to", "color": "gray", "from": "Tunisia", "label": "QoL Rank", "to": "39.0", "width": 1}, {"arrows": "to", "color": "gray", "from": "Malaysia", "label": "QoL Rank", "to": "40.0", "width": 1}, {"arrows": "to", "color": "gray", "from": "Pakistan", "label": "QoL Rank", "to": "41.0", "width": 1}, {"arrows": "to", "color": "gray", "from": "Ecuador", "label": "QoL Rank", "to": "42.0", "width": 1}, {"arrows": "to", "color": "gray", "from": "Paraguay", "label": "QoL Rank", "to": "43.0", "width": 1}, {"arrows": "to", "color": "gray", "from": "El Salvador", "label": "QoL Rank", "to": "44.0", "width": 1}, {"arrows": "to", "color": "gray", "from": "Brazil", "label": "QoL Rank", "to": "45.0", "width": 1}, {"arrows": "to", "color": "gray", "from": "Indonesia", "label": "QoL Rank", "to": "46.0", "width": 1}, {"arrows": "to", "color": "gray", "from": "Colombia", "label": "QoL Rank", "to": "47.0", "width": 1}, {"arrows": "to", "color": "gray", "from": "Philippines", "label": "QoL Rank", "to": "48.0", "width": 1}, {"arrows": "to", "color": "gray", "from": "Peru", "label": "QoL Rank", "to": "49.0", "width": 1}, {"arrows": "to", "color": "gray", "from": "Ethiopia", "label": "QoL Rank", "to": "50.0", "width": 1}, {"arrows": "to", "color": "gray", "from": "Dominican Republic", "label": "QoL Rank", "to": "51.0", "width": 1}, {"arrows": "to", "color": "gray", "from": "Kenya", "label": "QoL Rank", "to": "52.0", "width": 1}, {"arrows": "to", "color": "gray", "from": "Honduras", "label": "QoL Rank", "to": "53.0", "width": 1}, {"arrows": "to", "color": "gray", "from": "Botswana", "label": "QoL Rank", "to": "54.0", "width": 1}, {"arrows": "to", "color": "gray", "from": "Quality of Life", "label": "weight w1", "to": "Crime", "width": 1}, {"arrows": "to", "color": "gray", "from": "Quality of Life", "label": "weight w2", "to": "Life", "width": 1}, {"arrows": "to", "color": "gray", "from": "Quality of Life", "label": "weight w3", "to": "Happiness", "width": 1}, {"arrows": "to", "color": "gray", "from": "Quality of Life", "label": "weight w4", "to": "Poverty", "width": 1}, {"arrows": "to", "color": "gray", "from": "Crime", "label": "co", "to": "Mean Crime Index", "width": 1}, {"arrows": "to", "color": "gray", "from": "Crime", "label": "co", "to": "Min Crime Index", "width": 1}, {"arrows": "to", "color": "gray", "from": "Crime", "label": "co", "to": "Max Crime Index", "width": 1}, {"arrows": "to", "color": "gray", "from": "Life", "label": "co", "to": "Status", "width": 1}, {"arrows": "to", "color": "gray", "from": "Life", "label": "co", "to": "Life expectancy ", "width": 1}, {"arrows": "to", "color": "gray", "from": "Life", "label": "co", "to": "Adult Mortality", "width": 1}, {"arrows": "to", "color": "gray", "from": "Life", "label": "co", "to": "infant deaths", "width": 1}, {"arrows": "to", "color": "gray", "from": "Life", "label": "co", "to": "Alcohol", "width": 1}, {"arrows": "to", "color": "gray", "from": "Life", "label": "co", "to": "percentage expenditure", "width": 1}, {"arrows": "to", "color": "gray", "from": "Life", "label": "co", "to": "Hepatitis B", "width": 1}, {"arrows": "to", "color": "gray", "from": "Life", "label": "co", "to": "Measles ", "width": 1}, {"arrows": "to", "color": "gray", "from": "Life", "label": "co", "to": " BMI ", "width": 1}, {"arrows": "to", "color": "gray", "from": "Life", "label": "co", "to": "under-five deaths ", "width": 1}, {"arrows": "to", "color": "gray", "from": "Life", "label": "co", "to": "Polio", "width": 1}, {"arrows": "to", "color": "gray", "from": "Life", "label": "co", "to": "Total expenditure", "width": 1}, {"arrows": "to", "color": "gray", "from": "Life", "label": "co", "to": "Diphtheria ", "width": 1}, {"arrows": "to", "color": "gray", "from": "Life", "label": "co", "to": " HIV/AIDS", "width": 1}, {"arrows": "to", "color": "gray", "from": "Life", "label": "co", "to": "GDP", "width": 1}, {"arrows": "to", "color": "gray", "from": "Life", "label": "co", "to": "Population", "width": 1}, {"arrows": "to", "color": "gray", "from": "Life", "label": "co", "to": " thinness  1-19 years", "width": 1}, {"arrows": "to", "color": "gray", "from": "Life", "label": "co", "to": " thinness 5-9 years", "width": 1}, {"arrows": "to", "color": "gray", "from": "Life", "label": "co", "to": "Income composition of resources", "width": 1}, {"arrows": "to", "color": "gray", "from": "Life", "label": "co", "to": "Schooling", "width": 1}, {"arrows": "to", "color": "gray", "from": "Happiness", "label": "co", "to": "Economy (GDP per Capita)", "width": 1}, {"arrows": "to", "color": "gray", "from": "Happiness", "label": "co", "to": "Family", "width": 1}, {"arrows": "to", "color": "gray", "from": "Happiness", "label": "co", "to": "Freedom", "width": 1}, {"arrows": "to", "color": "gray", "from": "Happiness", "label": "co", "to": "Trust (Government Corruption)", "width": 1}, {"arrows": "to", "color": "gray", "from": "Happiness", "label": "co", "to": "Generosity", "width": 1}, {"arrows": "to", "color": "gray", "from": "Happiness", "label": "co", "to": "Dystopia Residual", "width": 1}, {"arrows": "to", "color": "gray", "from": "Happiness", "label": "co", "to": "Social support", "width": 1}, {"arrows": "to", "color": "gray", "from": "Happiness", "label": "co", "to": "Life expectancy ", "width": 1}, {"arrows": "to", "color": "gray", "from": "Poverty", "label": "co", "to": "Gini", "width": 1}]);
+
+                  nodeColors = {};
+                  allNodes = nodes.get({ returnType: "Object" });
+                  for (nodeId in allNodes) {
+                    nodeColors[nodeId] = allNodes[nodeId].color;
+                  }
+                  allEdges = edges.get({ returnType: "Object" });
+                  // adding nodes and edges to the graph
+                  data = {nodes: nodes, edges: edges};
+
+                  var options = {
+    "configure": {
+        "enabled": true,
+        "filter": [
+            "nodes"
+        ]
+    },
+    "edges": {
+        "color": {
+            "inherit": true
+        },
+        "smooth": {
+            "enabled": true,
+            "type": "dynamic"
+        }
+    },
+    "interaction": {
+        "dragNodes": true,
+        "hideEdgesOnDrag": false,
+        "hideNodesOnDrag": false
+    },
+    "physics": {
+        "enabled": true,
+        "stabilization": {
+            "enabled": true,
+            "fit": true,
+            "iterations": 1000,
+            "onlyDynamicEdges": false,
+            "updateInterval": 50
+        }
+    }
+};
+
+                  
+
+
+                  
+                  // if this network requires displaying the configure window,
+                  // put it in its div
+                  options.configure["container"] = document.getElementById("config");
+                  
+
+                  network = new vis.Network(container, data, options);
+
+                  
+
+                  
+                    network.on("selectNode", neighbourhoodHighlight);
+                  
+
+                  
+
+
+                  
+                      network.on("stabilizationProgress", function(params) {
+                          document.getElementById('loadingBar').removeAttribute("style");
+                          var maxWidth = 496;
+                          var minWidth = 20;
+                          var widthFactor = params.iterations/params.total;
+                          var width = Math.max(minWidth,maxWidth * widthFactor);
+                          document.getElementById('bar').style.width = width + 'px';
+                          document.getElementById('text').innerHTML = Math.round(widthFactor*100) + '%';
+                      });
+                      network.once("stabilizationIterationsDone", function() {
+                          document.getElementById('text').innerHTML = '100%';
+                          document.getElementById('bar').style.width = '496px';
+                          document.getElementById('loadingBar').style.opacity = 0;
+                          // really clean the dom element
+                          setTimeout(function () {document.getElementById('loadingBar').style.display = 'none';}, 500);
+                      });
+                  
+
+                  return network;
+
+              }
+              drawGraph();
+        </script>
+    </body>
+</html>
