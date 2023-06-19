@@ -181,7 +181,7 @@ for edge in G.edges:
 
 # nt.show_buttons(filter_=['nodes'])
 
-# nt.show('kg.html')
+nt.show('kg.html')
 
 
 if __name__ == '__main__':
