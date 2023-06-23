@@ -305,21 +305,12 @@ country_codes_dict = {
     'Zimbabwe': 'ZWE'
 }
 
-def get_merged(x1,x2,x3,x4):
+
+def get_merged(df, x1, x2, x3, x4):
     # Compute sum
     summ = x1 + x2 + x3 + x4
-
     # Load data
-    df_crime = get_crime_data()
-    df_life = get_life_data()
-    df_happ = get_happiness_data()
-    df_pov = get_poverty_data()
-
-    # Merge all dataframes on year 2015
-    df = pd.merge(df_crime[['ISO', 'Mean Crime Index']], \
-                  df_life[df_life['Year'] == 2015][['ISO', 'Life expectancy ']], on="ISO")
-    df = pd.merge(df, df_happ[df_happ['Year'] == 2015][['ISO', 'Happiness Score']], on="ISO")
-    df = pd.merge(df, df_pov[['ISO', 'Gini']], on="ISO")
+    df = df[['ISO', 'Mean Crime Index', 'Life expectancy', 'Happiness Score', 'MeanGini']]
 
     inv_iso_dict = {v: k for k, v in country_codes_dict.items()}
 
@@ -327,16 +318,17 @@ def get_merged(x1,x2,x3,x4):
     df = df.dropna()
 
     # Normalize
-    features = ['Mean Crime Index', 'Life expectancy ', 'Happiness Score', 'Gini']
+    features = ['Mean Crime Index', 'Life expectancy', 'Happiness Score', 'MeanGini']
     for feat in features:
-        df[feat] = (df[feat] - df[feat].min()) / (df[feat].max()-df[feat].min())
+        df[feat] = (df[feat] - df[feat].min()) / (df[feat].max() - df[feat].min())
 
     # Features
+    #     df.reset_index(inplace=True)
     df['Country'] = df['ISO'].apply(lambda x: inv_iso_dict[x])
 
+    df['Aggregate Scores'] = (x1 / summ) * (1 - df['Mean Crime Index']) + (x2 / summ) * df['Life expectancy'] \
+                             + (x3 / summ) * df['Happiness Score'] + (x4 / summ) * (1 - df['MeanGini'])
 
-    df['Aggregate Scores'] = (x1/summ)*(1-df['Mean Crime Index']) + (x2/summ)*df['Life expectancy ']\
-                             + (x3/summ)*df['Happiness Score'] + (x4/summ)*(1-df['Gini'])
     df = df.sort_values(by='Aggregate Scores')
     df['Rank'] = df['Aggregate Scores'].rank(ascending=False)
     return df.sort_values(by="Rank")
